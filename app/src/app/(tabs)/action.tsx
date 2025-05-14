@@ -127,6 +127,8 @@ export default function ActionPage() {
             remarks={`${trip.status}`}
             tripID={trip.id}
             onUpdate={fetchTrips}
+            start_rack={trip.start_rack}
+            end_rack={trip.end_rack}
           />
         ))}
       </View>

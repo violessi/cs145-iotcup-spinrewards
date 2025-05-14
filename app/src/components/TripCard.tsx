@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import globalStyles from "@/src/assets/styles";
 import { useRouter } from "expo-router";
 
-// fields and style of trip card 
+// props and style of trip card 
 // displayed in trips page
 
 type TripCardProps = {
@@ -14,6 +14,8 @@ type TripCardProps = {
   remarks: string;
   addtl_charge?: number;
   tripID: string;
+  start_rack: string;
+  end_rack: string;
   onUpdate?: () => void;
 };
 
@@ -25,6 +27,8 @@ export default function TripCard({
   remarks,
   addtl_charge,
   tripID,
+  start_rack,
+  end_rack,
   onUpdate,
 }: TripCardProps) {
   const statusStyles = getStatusStyles(remarks, addtl_charge); // remarks = status string
@@ -54,7 +58,7 @@ export default function TripCard({
 
 
   return (
-    <View style={tripStyles.card}>
+    <View style={globalStyles.card}>
       <Text style={globalStyles.subtitle}>{title}</Text>
 
       <View style={globalStyles.row}>
@@ -69,28 +73,29 @@ export default function TripCard({
         {/*Right*/}
         <View style={globalStyles.column}>
           <Text style={tripStyles.label}> From: </Text>
-          <Text style={tripStyles.detail}> Start Rack</Text>
+          <Text style={tripStyles.detail}> {start_rack}</Text>
           <Text style={tripStyles.label}> To: </Text>
-          <Text style={tripStyles.detail}> End Rack</Text>
+          <Text style={tripStyles.detail}> {end_rack}</Text>
         </View>
       </View>
       
       <View style={globalStyles.row}>
         {/*Left*/}
-        <View style={globalStyles.column}>
+        <View style={[globalStyles.column, { alignItems: 'flex-start' }]}>
           { remarks != 'reserved' && (
-            <View style={[tripStyles.status, statusStyles.container]}>
+            <View style={[globalStyles.statusBox, statusStyles.container]}>
               <Text style={[{ fontWeight: '600' }, {textTransform: 'capitalize'}, statusStyles.text]}>
                 {addtl_charge && addtl_charge > 0 ? 'Overdue: Php ' + addtl_charge : remarks}
               </Text>
             </View>
           )}
         </View>
-        {/*Right - try: make it right aligned*/}
+
+        {/*Right*/}
         <View style={[globalStyles.column, { alignItems: 'flex-end' }]}> 
-          { addtl_charge && addtl_charge > 0 && ( // Penalty information 
+          { addtl_charge && addtl_charge > 0 && ( // penalty information 
             <TouchableOpacity
-              style={[tripStyles.status, {backgroundColor: '#e2e3e5'}]}
+              style={[globalStyles.statusBox, {backgroundColor: '#e2e3e5'}]}
               onPress={() => router.replace('/profile')} // go to profile
               activeOpacity={0.8}
               >
@@ -99,7 +104,7 @@ export default function TripCard({
           )}
           { remarks === 'active' && ( // nearest rack to me 
             <TouchableOpacity
-              style={[tripStyles.status, {backgroundColor: '#e2e3e5'}]}
+              style={[globalStyles.statusBox, {backgroundColor: '#e2e3e5'}]}
               onPress={() => router.replace('/')} // go to maps?
               activeOpacity={0.8}
               >
@@ -108,8 +113,8 @@ export default function TripCard({
           )}
           { remarks === 'reserved' && ( // cancel reservation 
             <TouchableOpacity
-              style={[tripStyles.status, {backgroundColor: '#e2e3e5'}]}
-              onPress={() => handleCancel(tripID)} // handle delete
+              style={[globalStyles.statusBox, {backgroundColor: '#e2e3e5'}]}
+              onPress={() => handleCancel(tripID)} // handle cancel/delete, use tripID
               activeOpacity={0.8}
               >
               <Text>Cancel reservation</Text>
@@ -119,7 +124,7 @@ export default function TripCard({
       </View>
       
       { remarks != 'reserved' && ( // nearest rack to me 
-        <Text style={[tripStyles.detail, {color: '#721c24'}]}>
+        <Text style={[tripStyles.detail, {color: '#721c24'}, {marginTop: 8}]}>
           <Text style={[tripStyles.label, {color: '#721c24'}]}>Remarks: </Text>
           [time left or overdue balance]
         </Text>
@@ -129,15 +134,6 @@ export default function TripCard({
 }
 
 const tripStyles = StyleSheet.create({
-  card: {
-    backgroundColor: '#fff',
-    borderRadius: 8,
-    padding: 15,
-    marginBottom: 20,
-    width: '100%',
-    boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.3)',
-    elevation: 5,
-  },
   detail: {
     marginLeft: 5,
     fontSize: 14,
@@ -147,20 +143,12 @@ const tripStyles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#555',
   },
-  status: {
-    alignSelf: 'flex-start',
-    paddingVertical: 3,
-    paddingHorizontal: 8,
-    borderRadius: 8,
-    borderWidth: 1,
-    alignItems: 'center',
-  },
 });
 
 // diff colored status boxes
 const getStatusStyles = (status: string, addtlCharge?: number) => {
  if (addtlCharge && addtlCharge > 0) {
-    return { //case: overdue
+    return { // red; overdue
       container: {
         backgroundColor: '#f8d7da',
         borderColor: '#721c24',
@@ -192,7 +180,7 @@ const getStatusStyles = (status: string, addtlCharge?: number) => {
           color: '#155724',
         },
       };
-    default: // 
+    default: // gray
       return {
         container: {
           backgroundColor: '#e2e3e5',

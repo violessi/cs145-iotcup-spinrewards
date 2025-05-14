@@ -66,6 +66,8 @@ export default function TripScreen() {
             addtl_charge={trip.addtl_charge}
             tripID={trip.id}
             onUpdate={fetchTrips}
+            start_rack={trip.start_rack}
+            end_rack={trip.end_rack}
           />
         ))}
         <Text style={globalStyles.title}> Completed </Text>
@@ -80,6 +82,8 @@ export default function TripScreen() {
             addtl_charge={trip.addtl_charge}
             tripID={trip.id}
             onUpdate={fetchTrips}
+            start_rack={trip.start_rack}
+            end_rack={trip.end_rack}
           />
         ))}
       </ScrollView>

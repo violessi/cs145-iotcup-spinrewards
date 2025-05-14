@@ -52,6 +52,24 @@ const globalStyles = StyleSheet.create({
     width: '49%',
     marginBottom: 5,
   },
+  card: {
+    backgroundColor: '#fff',
+    borderRadius: 8,
+    padding: 15,
+    marginBottom: 20,
+    width: '100%',
+    boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.3)',
+    elevation: 5,
+  },
+  statusBox: {
+    marginTop: 15,
+    marginRight: 8,
+    paddingVertical: 3,
+    paddingHorizontal: 8,
+    borderRadius: 8,
+    borderWidth: 1,
+    alignItems: 'center',
+  },
 });
 
 export default globalStyles;

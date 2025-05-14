@@ -74,7 +74,9 @@ router.post("/reserve", async (req, res) => {
       start_rack: rack, // takes current rack page they're on
     };
 
-    await db.collection("trips").add(newTrip);
+    await db.collection("trips").add(newTrip); // add new trip doc
+    // should also assign a bike already (get a bike from the rack, set as reserved)
+    // and update user dbs
     res.status(200).json({ message: "[SERVER] Bike reserved!" });
   } catch (err) {
     res.status(500).json({ error: "[SERVER] Failed to reserve bike" });
@@ -88,6 +90,7 @@ router.post("/cancel", async (req, res) => {
 
   try {
     await db.collection("trips").doc(tripID).delete();
+    // also update associated bike and user fields
     res.status(200).json({ message: "[SERVER] Trip deleted." });
   } catch (err) {
     res.status(500).json({ error: "[SERVER] Failed to delete trip" });

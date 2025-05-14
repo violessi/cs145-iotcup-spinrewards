@@ -11,6 +11,7 @@ app.get('/', (req, res) => {
 
 // Load routes
 app.use('/api/bikeActions', require('./routes/bikeActions'));
+app.use('/api/rewardActions', require('./routes/rewardActions'));
 
 const PORT = 3000;
 app.listen(PORT, () => {
