@@ -20,10 +20,10 @@ router.post("/avail", async (req, res) => {
     };
 
     await db.collection("trips").add(newTrip);
-    res.status(200).json({ message: "Bike availed!" });
+    res.status(200).json({ message: "[SERVER] Bike availed!" });
   } catch (err) {
     console.error(err);
-    res.status(500).json({ error: "Failed to avail bike" });
+    res.status(500).json({ error: "[SERVER] Failed to avail bike" });
   }
 });
 
@@ -38,7 +38,7 @@ router.post("/return", async (req, res) => {
       .get();
 
     if (snapshot.empty) {
-      return res.status(404).json({ error: "No active trips found" });
+      return res.status(404).json({ error: "[SERVER] No active trips found" });
     }
 
     const tripDoc = snapshot.docs[0];
@@ -52,10 +52,10 @@ router.post("/return", async (req, res) => {
       updated_at: new Date(),
     });
 
-    res.status(200).json({ message: "Bike returned!" });
+    res.status(200).json({ message: "[SERVER] Bike returned!" });
   } catch (err) {
     console.error(err);
-    res.status(500).json({ error: "Failed to return bike" });
+    res.status(500).json({ error: "[SERVER] Failed to return bike" });
   }
 });
 
@@ -75,9 +75,22 @@ router.post("/reserve", async (req, res) => {
     };
 
     await db.collection("trips").add(newTrip);
-    res.status(200).json({ message: "Bike reserved!" });
+    res.status(200).json({ message: "[SERVER] Bike reserved!" });
   } catch (err) {
-    res.status(500).json({ error: "Failed to reserve bike" });
+    res.status(500).json({ error: "[SERVER] Failed to reserve bike" });
+  }
+});
+
+// POST /api/bikeActions/cancel
+router.post("/cancel", async (req, res) => {
+  const { tripID } = req.body;
+  if (!tripID) return res.status(400).json({ error: "[SERVER] Missing tripID" });
+
+  try {
+    await db.collection("trips").doc(tripID).delete();
+    res.status(200).json({ message: "[SERVER] Trip deleted." });
+  } catch (err) {
+    res.status(500).json({ error: "[SERVER] Failed to delete trip" });
   }
 });
 
