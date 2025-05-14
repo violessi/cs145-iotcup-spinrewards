@@ -13,6 +13,8 @@ type TripCardProps = {
   tripEnd: string;
   remarks: string;
   addtl_charge?: number;
+  tripID: string;
+  onUpdate?: () => void;
 };
 
 export default function TripCard({
@@ -22,9 +24,34 @@ export default function TripCard({
   tripEnd,
   remarks,
   addtl_charge,
+  tripID,
+  onUpdate,
 }: TripCardProps) {
   const statusStyles = getStatusStyles(remarks, addtl_charge); // remarks = status string
   const router = useRouter();  
+
+  const handleCancel = async (tripID: string) => {
+    try {
+      const res = await fetch("http://localhost:3000/api/bikeActions/cancel", {
+        method: "POST",
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ tripID })
+      });
+
+      if (res.ok) {
+        console.log("Trip deleted");
+        onUpdate?.();
+      } else {
+        const { error } = await res.json();
+        console.error("[APP] Failed to delete trip:", error);
+      }
+    } catch (err) {
+      console.error("[APP] Error deleting trip:", err);
+    }
+  };
+
 
   return (
     <View style={tripStyles.card}>
@@ -82,7 +109,7 @@ export default function TripCard({
           { remarks === 'reserved' && ( // cancel reservation 
             <TouchableOpacity
               style={[tripStyles.status, {backgroundColor: '#e2e3e5'}]}
-              //onPress={} // handle delete
+              onPress={() => handleCancel(tripID)} // handle delete
               activeOpacity={0.8}
               >
               <Text>Cancel reservation</Text>
@@ -198,4 +225,5 @@ const formatDate = (dateString: string): string => {
 
     return `${datePart} (${timePart})`;
     }
+    return '';
 };

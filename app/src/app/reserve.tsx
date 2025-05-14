@@ -34,7 +34,7 @@ export default function ReserveScreen() {
         // details/address from db = racks, fields = rack_name, location
         const rackDoc = await getDoc(doc(db, "racks", rackID));
         if (!rackDoc.exists()) {
-          console.error("Rack not found"); // modal/go back
+          console.error("[APP] Rack not found"); // modal/go back
           return;
         }
 
@@ -66,12 +66,12 @@ export default function ReserveScreen() {
           empty: emptySlots,
         });
 
-        console.log("Rack:", rackData.rack_name);
-        console.log("Available:", availableCount);
-        console.log("Reserved:", reservedCount);
-        console.log("Empty slots:", emptySlots);
+        console.log("[APP] Rack:", rackData.rack_name);
+        console.log("[APP] Available:", availableCount);
+        console.log("[APP] Reserved:", reservedCount);
+        console.log("[APP] Empty slots:", emptySlots);
       } catch (error) {
-        console.error("Error fetching racks:", error);
+        console.error("[APP] Error fetching racks:", error);
       }
     };
   
@@ -80,8 +80,8 @@ export default function ReserveScreen() {
 
   
   // handle reserve function
-  // post: bike_id, 
   const handleReserve = async () => {
+    
     try {
       const res = await fetch("http://localhost:3000/api/bikeActions/reserve", {
         method: "POST", // post to server to handle reservation request
@@ -90,20 +90,20 @@ export default function ReserveScreen() {
         },
         body: JSON.stringify({
           rack: rackID,
-          date: "2025-05-13", 
-          time: "11:30",
+          date: "2025-05-13", // replace with date from picker
+          time: "11:30", // replace with time from picker
         }),
       });
   
       if (res.ok) {
-        console.log("Bike reserved!");
-        router.replace("/");
+        console.log("[APP] Bike reserved!");
+        router.replace("/action");
       } else {
         const { error } = await res.json();
-        console.log(error || "Error reserving bike");
+        console.log(error || "[APP] Error reserving bike");
       }
     } catch (err) {
-      console.error("Error:", err);
+      console.error("[APP] Error:", err);
     }
   };
   
@@ -210,10 +210,6 @@ const reserveStyles = StyleSheet.create({
     padding: 15,
     marginBottom: 20,
     width: '100%',
-    // shadowColor: '#000',
-    // shadowOffset: { width: 0, height: 1 },
-    // shadowOpacity: 0.3,
-    // shadowRadius: 4,
     boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.3)',
     elevation: 5,
   },

@@ -15,32 +15,35 @@ export default function TripScreen() {
   const [completedTrips, setCompletedTrips] = useState<Trip[]>([]);
   const [activeTrips, setActiveTrips] = useState<Trip[]>([]);
 
+  const fetchTrips = async () => {
+    try {
+      const tripsCollection = collection(db, "trips");
+      const tripSnapshot = await getDocs(tripsCollection);
+        
+      const allTrips: Trip[] = tripSnapshot.docs.map((doc) => ({
+        id: doc.id, // document ID
+        ...(doc.data() as Omit<Trip, 'id'>), 
+      }));
+
+      const active = allTrips.filter(trip =>
+        trip.status === "active"
+      );
+
+      const completed = allTrips.filter(trip =>
+        trip.status === "completed" || trip.status === "cancelled"
+      );
+
+      setActiveTrips(active);
+      setCompletedTrips(completed);
+
+      console.log("Active Trips:", active);
+      console.log("Completed Trips:", completed);
+    } catch (error) {
+      console.error("Error fetching trips:", error);
+    }
+  };
+
   useEffect(() => {
-    const fetchTrips = async () => {
-      try {
-        const tripsCollection = collection(db, "trips");
-        const tripSnapshot = await getDocs(tripsCollection);
-
-        const allTrips: Trip[] = tripSnapshot.docs.map((doc) => doc.data() as Trip);
-
-        const active = allTrips.filter(trip =>
-          trip.status === "active"
-        );
-
-        const completed = allTrips.filter(trip =>
-          trip.status === "completed" || trip.status === "cancelled"
-        );
-
-        setActiveTrips(active);
-        setCompletedTrips(completed);
-
-        console.log("Active Trips:", active);
-        console.log("Completed Trips:", completed);
-      } catch (error) {
-        console.error("Error fetching trips:", error);
-      }
-    };
-
     fetchTrips();
   }, []);
 
@@ -61,6 +64,8 @@ export default function TripScreen() {
             tripEnd=""
             remarks={`${trip.status}`}
             addtl_charge={trip.addtl_charge}
+            tripID={trip.id}
+            onUpdate={fetchTrips}
           />
         ))}
         <Text style={globalStyles.title}> Completed </Text>
@@ -73,6 +78,8 @@ export default function TripScreen() {
             tripEnd={`${trip.end_time.toDate().toLocaleString()}`}
             remarks={`${trip.status}`}
             addtl_charge={trip.addtl_charge}
+            tripID={trip.id}
+            onUpdate={fetchTrips}
           />
         ))}
       </ScrollView>

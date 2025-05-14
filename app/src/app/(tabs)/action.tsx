@@ -52,26 +52,29 @@ export default function ActionPage() {
 
   const [activeTrips, setActiveTrips] = useState<Trip[]>([]);
 
-  useEffect(() => {
-      const fetchTrips = async () => {
-        try {
-          const tripsCollection = collection(db, "trips");
-          const tripSnapshot = await getDocs(tripsCollection);
+  const fetchTrips = async () => {
+      try {
+        const tripsCollection = collection(db, "trips");
+        const tripSnapshot = await getDocs(tripsCollection);
+          
+        const allTrips: Trip[] = tripSnapshot.docs.map((doc) => ({
+          id: doc.id, // document ID
+          ...(doc.data() as Omit<Trip, 'id'>), 
+        }));
   
-          const allTrips: Trip[] = tripSnapshot.docs.map((doc) => doc.data() as Trip);
+        const active = allTrips.filter(trip =>
+          trip.status === "reserved"
+        );
   
-          const active = allTrips.filter(trip =>
-            trip.status === "reserved"
-          );
+        setActiveTrips(active);
   
-          setActiveTrips(active);
+        console.log("Active Trips:", active);
+      } catch (error) {
+        console.error("Error fetching trips:", error);
+      }
+    };
   
-          console.log("Active Trips:", active);
-        } catch (error) {
-          console.error("Error fetching trips:", error);
-        }
-      };
-  
+    useEffect(() => {
       fetchTrips();
     }, []);
 
@@ -122,13 +125,13 @@ export default function ActionPage() {
             tripStart={`${trip.start_time.toDate().toLocaleString()}`}
             tripEnd=""
             remarks={`${trip.status}`}
+            tripID={trip.id}
+            onUpdate={fetchTrips}
           />
         ))}
       </View>
       
       </ScrollView>
-
-
 
     </SafeAreaView>
   );
