@@ -62,19 +62,19 @@ export default function ActionPage() {
             title="Rent"
             description="Rent a bike"
             icon="bike"
-            onPress={() => router.replace("/rent")}
+            onPress={() => router.navigate("/rent")}
           />
           <Option
             title="Return"
             description="Return a bike"
             icon="arrow-left"
-            onPress={() => router.replace("/return")}
+            onPress={() => router.navigate("/return")}
           />
           <Option
             title="Reserve"
             description="Reserve a bike"
             icon="calendar"
-            onPress={() => router.replace("/")}
+            onPress={() => router.navigate("/")}
           />
         </View>
         <Header
@@ -89,7 +89,7 @@ export default function ActionPage() {
               key={index}
               title={`Trip using ${trip.bike_id}`}
               bikeID={`${trip.bike_id}`}
-              tripStart={`${trip.start_time.toDate().toLocaleString()}`}
+              tripStart={`${trip.start_time?.toDate().toLocaleString()}`}
               tripEnd=""
               remarks={`${trip.status}`}
             />

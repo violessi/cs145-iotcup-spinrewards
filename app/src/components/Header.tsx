@@ -1,6 +1,7 @@
 import React from "react";
 import { View, Text, Pressable, Image } from "react-native";
 import { IconButton } from "react-native-paper";
+import { useRouter } from "expo-router";
 import { cn } from "@/utils";
 
 const backIcon = require("@/src/assets/images/back-icon.png");
@@ -20,6 +21,12 @@ export default function Header({
   isHomepage = false,
   prevCallback,
 }: HeaderProps) {
+  const router = useRouter();
+  const handleBack = () => {
+    if (prevCallback) prevCallback();
+    else router.back();
+  };
+
   return (
     <View
       className={cn(
@@ -29,7 +36,7 @@ export default function Header({
     >
       {hasBack ? (
         <View className="flex-row items-center gap-4">
-          <Pressable onPress={prevCallback}>
+          <Pressable onPress={handleBack}>
             <Image source={backIcon} className="h-5 w-5 " />
           </Pressable>
           <View style={{ flex: 1 }}>
