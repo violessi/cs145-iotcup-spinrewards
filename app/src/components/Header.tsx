@@ -1,6 +1,7 @@
 import React from "react";
 import { View, Text, Pressable, Image } from "react-native";
 import { IconButton } from "react-native-paper";
+import { cn } from "@/utils";
 
 const backIcon = require("@/src/assets/images/back-icon.png");
 
@@ -21,9 +22,10 @@ export default function Header({
 }: HeaderProps) {
   return (
     <View
-      className={`h-24 px-5 py-5 flex-col justify-end ${
+      className={cn(
+        "h-24 px-5 py-5 flex-col justify-end",
         isHomepage ? "bg-background" : "bg-primary"
-      }`}
+      )}
     >
       {hasBack ? (
         <View className="flex-row items-center gap-4">
@@ -38,17 +40,19 @@ export default function Header({
       ) : (
         <View className="items-start">
           <Text
-            className={`font-semibold text-2xl ${
+            className={cn(
+              "font-semibold text-2xl",
               isHomepage ? "text-primary" : "text-white"
-            } `}
+            )}
           >
             {title}
           </Text>
           {subtitle && (
             <Text
-              className={`text-lg ${
+              className={cn(
+                "text-lg",
                 isHomepage ? "text-primary" : "text-white"
-              } `}
+              )}
             >
               {subtitle}
             </Text>
